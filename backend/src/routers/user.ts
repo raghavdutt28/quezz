@@ -2,12 +2,20 @@ import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import { S3Client, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { createPresignedPost } from '@aws-sdk/s3-presigned-post'
 import authMiddleware from "../middleware";
 import {JWT_SECRET} from "../index";
+import { createTaskInput } from "../types";
 
-const s3Client = new S3Client();
+const s3Client = new S3Client({
+    region: "us-east-1",
+    credentials: {
+        accessKeyId: "AKIA47CRWHAWR4JO2D66",
+        secretAccessKey: "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"
+    }
+});
 
+const DEFAULT_TITLE = "Select the most clickable thumbnail";
 
 const prismaClient = new PrismaClient();
 
@@ -15,16 +23,63 @@ const prismaClient = new PrismaClient();
 
 const router = Router();
 
+router.post("/task", authMiddleware, async (req, res) => {
+    //validate the inputs from the user
+    //@ts-ignore
+    const userId = req.userId;
+    const body = req.body;
+    const paresedData = createTaskInput.safeParse(body);
+
+    if(!paresedData.success){
+        return res.status(411).json({
+            message: "You've sent the wrong inputs."
+        })
+    }
+
+    let response = await prismaClient.$transaction(async (tx) => {
+        const response = await tx.task.create({
+            data: {
+                title: paresedData.data.title ?? DEFAULT_TITLE,
+                signature: paresedData.data.signature,
+                amount: "1",
+                user_id: userId,
+            }
+        });
+        await tx.option.createMany({
+            data: paresedData.data.options.map(x => ({
+                image_url: x.imageUrl,
+                task_id: response.id,
+            }))
+        })
+        return response;
+    })
+    res.json({
+        id: response.id
+    })
+})
+
 router.get("/preSignedUrl", authMiddleware, async (req, res) =>{
     //@ts-ignore
     const userId = req.userId;
-    const command = new PutObjectCommand({
+
+    const { url, fields } = await createPresignedPost(s3Client, {
         Bucket: "decentalized-quezz",
-        Key: "/decentralised-quezz/${}"
-    })
-    const preSignedUrl = await getSignedUrl(s3Client, command, {
-        expiresIn: 3600
-    })
+        Key: `/decentralized-quezz/${userId}/${Math.random()}/image.jpg`,
+        Conditions: [
+          ['content-length-range', 0, 5 * 1024 * 1024] // 5 MB max
+        ],
+        Fields: {
+          'Content-Type': 'image/jpg'
+        },
+        Expires: 3600
+      })
+
+      res.json({
+        preSignedUrl: url,
+        fields
+      })
+      
+      console.log({ url, fields })
 })
 
 //sign in with wallet
