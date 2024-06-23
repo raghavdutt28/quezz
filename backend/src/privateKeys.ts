@@ -1,0 +1,1 @@
+export const privateKey = process.env.QUEZZ_PRIVATE_KEY ?? "";

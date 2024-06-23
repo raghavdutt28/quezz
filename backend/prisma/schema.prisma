@@ -23,9 +23,9 @@ model Worker {
   id                Int           @id @default(autoincrement())
   address           String        @unique
   submissions       Submission[]
-  balance_id        Int
   pending_amount    Int
   locked_amount     Int
+  payouts           Payouts[]
 }
 
 // todo: establish 1-1 relationship between balance and worker correctly
@@ -41,7 +41,7 @@ model Task {
   id            Int             @id @default(autoincrement())
   title         String?         @default("Select the most clickable thumbnail")
   signature     String
-  amount        String
+  amount        Int
   options       Option[]
   user_id       Int
   user          User            @relation(fields: [user_id], references: [id])
@@ -65,6 +65,22 @@ model Submission {
   task_id     Int
   task        Task    @relation(fields: [task_id], references: [id])
   amount      Int
+  @@unique([worker_id, task_id])
+}
+
+model Payouts {
+  id            Int             @id @default(autoincrement())
+  worker_id     Int
+  worker        Worker          @relation(fields: [worker_id], references: [id])
+  amount        Int
+  signature     String
+  status        TxnStatus
+}
+
+enum TxnStatus {
+  Processing
+  Success
+  Failure
 }
 
 //todo: make dynamic option caching logic
