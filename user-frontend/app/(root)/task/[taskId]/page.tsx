@@ -39,8 +39,10 @@ export default function TaskDetailPage({params: {taskId}}: {params: {taskId: str
                 }
             </div>
             <div className="flex justify-center pt-8">
-                {Object.keys(result || {}).map(taskId => <Option imageUrl = {result[taskId].option.imageUrl} votes = {result[taskId].count}/>)}
-            </div>
+        {Object.keys(result || {}).map((taskId) => (
+          <Option key={taskId} imageUrl={result[taskId].option.imageUrl} votes={result[taskId].count} />
+        ))}
+      </div>
         </div>
     );
 }
