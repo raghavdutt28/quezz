@@ -9,6 +9,7 @@ const port = process.env.PORT || 8080;
 //expecting the user to provide some data
 app.use(express.json());
 app.use(cors())
+console.log(window.location.href);
 // Mount the routers with the specified base paths
 app.use("/v1/user", userRouter);
 app.use("/v1/worker", workerRouter);

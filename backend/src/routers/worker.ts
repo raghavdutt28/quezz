@@ -19,10 +19,8 @@ const router = Router();
 const prismaClient = new PrismaClient();
 
 router.post("/payout", workerauthMiddleware, async (req, res) => {
-    console.log("In payout");
     //@ts-ignore
     const workerId = req.workerId;
-    console.log("got wID");
     const worker = await prismaClient.worker.findFirst({
         where: {
             id: Number(workerId),
@@ -37,7 +35,6 @@ router.post("/payout", workerauthMiddleware, async (req, res) => {
 
     //logic here to create a txn
     const address = worker?.address;
-    console.log("got wAdd");
 
     const transaction = new Transaction().add(
         SystemProgram.transfer({
