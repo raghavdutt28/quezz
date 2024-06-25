@@ -8,11 +8,10 @@ const user_1 = __importDefault(require("./routers/user"));
 const worker_1 = __importDefault(require("./routers/worker"));
 const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8888;
 //expecting the user to provide some data
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
-console.log(window.location.href);
 // Mount the routers with the specified base paths
 app.use("/v1/user", user_1.default);
 app.use("/v1/worker", worker_1.default);
