@@ -4,12 +4,11 @@ import workerRouter from "./routers/worker";
 import cors from "cors";
 
 const app = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8888;
 
 //expecting the user to provide some data
 app.use(express.json());
-app.use(cors())
-console.log(window.location.href);
+app.use(cors());
 // Mount the routers with the specified base paths
 app.use("/v1/user", userRouter);
 app.use("/v1/worker", workerRouter);
