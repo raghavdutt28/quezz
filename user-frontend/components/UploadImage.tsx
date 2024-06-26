@@ -1,6 +1,7 @@
 "use client"
 import { BACKEND_URL, CLOUDFRONT_URL } from "@/utils";
 import axios from "axios";
+import Image from "next/image";
 import { useState } from "react"
 
 export function UploadImage({ onImageAdded, image }: {
@@ -40,7 +41,7 @@ export function UploadImage({ onImageAdded, image }: {
     }
 
     if (image) {
-        return <img className={"p-2 w-96 rounded"} src={image} />
+        return <Image alt="Option" className={"p-2 w-96 rounded"} src={image} />
     }
 
     return <div>

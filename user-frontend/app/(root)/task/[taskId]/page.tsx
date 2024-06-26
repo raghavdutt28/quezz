@@ -2,6 +2,7 @@
 import Appbar from "@/components/Appbar";
 import { BACKEND_URL } from "@/utils";
 import axios from 'axios';
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 
@@ -50,7 +51,7 @@ export default function TaskDetailPage({params: {taskId}}: {params: {taskId: str
 function Option({imageUrl, votes}: {imageUrl: string, votes: number}) {
     return(
         <div>
-            <img className={"p-2 w-96 rounded"} src={imageUrl} />
+            <Image alt={imageUrl} className={"p-2 w-96 rounded"} src={imageUrl} />
             <div className = "flex justify-center">{votes}</div>
         </div>
     );
