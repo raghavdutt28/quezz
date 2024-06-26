@@ -51,7 +51,7 @@ export default function TaskDetailPage({params: {taskId}}: {params: {taskId: str
 function Option({imageUrl, votes}: {imageUrl: string, votes: number}) {
     return(
         <div>
-            <Image alt={imageUrl} className={"p-2 w-96 rounded"} src={imageUrl} />
+            <img alt={imageUrl} className={"p-2 w-96 rounded"} src={imageUrl} />
             <div className = "flex justify-center">{votes}</div>
         </div>
     );
