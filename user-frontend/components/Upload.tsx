@@ -83,7 +83,7 @@ function Upload() {
         </div>
 
         <div className="flex justify-center">
-          <button onClick={txSignature ? onSubmit : makePayment} type="button" className="mt-4 text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
+          <button onClick={txSignature ? onSubmit : makePayment} type="button" className="mt-4 bg-[#512da8] cursor-pointer flex items-center text-base font-semibold text-white rounded px-6 py-2 hover:bg-[#1A1F2E]">
             {txSignature ? "Submit Task" : "Pay 0.1 SOL"}
           </button>
         </div>
