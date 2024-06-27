@@ -13,26 +13,26 @@ Welcome to **QUE$$**, a Solana-based, one-stop destination for getting your data
 
 ### 🔑 Key Features for Users
 
-- **🔐 Crypto Wallet Login:** Users can securely log in using their crypto wallets.
-- **📝 Task Creation:** Users can create labeling tasks with ease.
-- **📷 Options Provision:** Users can provide options such as images for labeling.
-- **💸 Fixed Payment:** Users can initiate tasks by paying a fixed amount in crypto.
-- **📊 Live Results:** Users can check the results of their tasks in real-time.
+- **Crypto Wallet Login:** Users can securely log in using their crypto wallets.
+- **Task Creation:** Users can create labeling tasks with ease.
+- **Options Provision:** Users can provide options such as images for labeling.
+- **Fixed Payment:** Users can initiate tasks by paying a fixed amount in crypto.
+- **Live Results:** Users can check the results of their tasks in real-time.
 
 ### 🔑 Key Features for Workers
 
-- **🔐 Crypto Wallet Login:** Workers can securely log in using their crypto wallets.
-- **✅ Answering Tasks:** Workers can complete tasks by selecting an option.
-- **💵 Payout Initiation:** Workers can initiate payouts for the amount earned by answering tasks.
+- **Crypto Wallet Login:** Workers can securely log in using their crypto wallets.
+- **Answering Tasks:** Workers can complete tasks by selecting an option.
+- **Payout Initiation:** Workers can initiate payouts for the amount earned by answering tasks.
 
 ## 🚀 Getting Started
 
 To get started with QUE$$, follow these steps:
 
-1. **🔗 Visit the Platform:** Go to [QUE$$](https://quezz.vercel.app/) to access the user portal, or [QUE$$-Worker](https://quezz-worker.vercel.app/) to access the worker portal.
-2. **🔐 Login:** Use your crypto wallet to log in.
-3. **📝 Create/Answer Tasks:** Depending on whether you are a user or a worker, create tasks or start answering them.
-4. **💰 Manage Payments:** Users can make payments to initiate tasks, and workers can initiate payouts for their earnings.
+1. **Visit the Platform:** Go to [QUE$$](https://quezz.vercel.app/) to access the user portal, or [QUE$$-Worker](https://quezz-worker.vercel.app/) to access the worker portal.
+2. **Login:** Use your crypto wallet to log in.
+3. **Create/Answer Tasks:** Depending on whether you are a user or a worker, create tasks or start answering them.
+4. **Manage Payments:** Users can make payments to initiate tasks, and workers can initiate payouts for their earnings.
 
 ## 📬 Contact
 
