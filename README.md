@@ -1,32 +1,40 @@
-# QUE$$: Crypto Compensation Based Data Labeling Platform
+# QUE$$: Crypto Compensation based Data Labeling Platform
 
-[![QUE$$](https://img.shields.io/badge/QUE$$-Platform-green)](https://quezz.vercel.app/)
-[![QUE$$-Worker](https://img.shields.io/badge/QUE$$-Worker-orange)](https://quezz-worker.vercel.app/)
+Welcome to **QUE$$**, a Solana-based, one-stop destination for getting your data labeled with the power of crypto compensation.
 
-QUE$$ is a Solana-based one-stop destination for getting your data labeled efficiently and securely. By leveraging cryptocurrency, QUE$$ ensures a seamless and transparent payment process for both users and workers.
+## Links
 
-## Features
+- **QUE$$:** [https://quezz.vercel.app/](https://quezz.vercel.app/)
+- **QUE$$-Worker:** [https://quezz-worker.vercel.app/](https://quezz-worker.vercel.app/)
 
-### For Users:
-- **Login with Crypto Wallets**: Securely log in using your preferred cryptocurrency wallet.
-- **Create Tasks**: Set up tasks with specific labeling requirements.
-- **Provide Options**: Upload images or other data to be labeled.
-- **Initiate Tasks with Payments**: Pay a fixed amount to get your task started.
+## Overview
 
-### For Workers:
-- **Login with Crypto Wallets**: Access the platform using your cryptocurrency wallet.
-- **Answer Tasks**: Complete simple labeling tasks by selecting options.
-- **Initiate Payouts**: Request payouts for the amount earned by answering tasks.
+**QUE$$** leverages the Solana blockchain to offer a seamless data labeling experience, incentivizing workers through crypto rewards. It provides a platform where users can easily create tasks and workers can earn by completing them.
+
+### Key Features for Users
+
+- **Crypto Wallet Login:** Users can securely log in using their crypto wallets.
+- **Task Creation:** Users can create labeling tasks with ease.
+- **Options Provision:** Users can provide options such as images for labeling.
+- **Fixed Payment:** Users can initiate tasks by paying a fixed amount in crypto.
+- **Live Results:** Users can check the results of their tasks in real-time.
+
+### Key Features for Workers
+
+- **Crypto Wallet Login:** Workers can securely log in using their crypto wallets.
+- **Answering Tasks:** Workers can complete tasks by selecting the correct options.
+- **Payout Initiation:** Workers can initiate payouts for the amount earned by answering tasks.
 
 ## Getting Started
 
-### Prerequisites
-- A crypto wallet compatible with Solana.
-- Basic understanding of cryptocurrency transactions.
+To get started with QUE$$, follow these steps:
 
-### Installation
+1. **Visit the Platform:** Go to [QUE$$](https://quezz.vercel.app/) to access the user portal, or [QUE$$-Worker](https://quezz-worker.vercel.app/) to access the worker portal.
+2. **Login:** Use your crypto wallet to log in.
+3. **Create/Answer Tasks:** Depending on whether you are a user or a worker, create tasks or start answering them.
+4. **Manage Payments:** Users can make payments to initiate tasks, and workers can initiate payouts for their earnings.
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/quezz.git
-   cd quezz
+
+## Contact
+
+If you have any questions or feedback, please feel free to reach out.
