@@ -2,7 +2,7 @@
 import { UploadImage } from "@/components/UploadImage";
 import { BACKEND_URL } from "@/utils";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { PublicKey, SystemProgram, Transaction } from "@solana/web3.js";
+import { PublicKey, SystemProgram, Transaction, TransactionMessage, VersionedTransaction } from "@solana/web3.js";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -13,6 +13,7 @@ function Upload() {
   const [images, setImages] = useState<string[]>([]);
   const [title, setTitle] = useState(DEFAULT_TITLE);
   const [txSignature, setTxSignature] = useState("");
+  const [txConfirmed, setTxConfirmed] = useState(false);
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
   const router = useRouter();
@@ -33,26 +34,55 @@ function Upload() {
 
     router.push(`/task/${response.data.id}`)
   }
-  async function makePayment() {
 
-    const transaction = new Transaction().add(
-      SystemProgram.transfer({
+  async function makePayment() {
+  
+    const transferInstruction = SystemProgram.transfer({
         fromPubkey: publicKey!,
         toPubkey: new PublicKey(que$$PublicKey),
         lamports: 100000000,
-      })
-    );
+    });
 
-    const {
-      context: { slot: minContextSlot },
-      value: { blockhash, lastValidBlockHeight }
-    } = await connection.getLatestBlockhashAndContext();
+    const latestBlockhash = await connection.getLatestBlockhash();
 
-    const signature = await sendTransaction(transaction, connection, { minContextSlot });
+    const messageV0 = new TransactionMessage({
+        payerKey: publicKey!,
+        recentBlockhash: latestBlockhash.blockhash,
+        instructions: [transferInstruction],
+    }).compileToV0Message();
 
-    await connection.confirmTransaction({ blockhash, lastValidBlockHeight, signature });
+
+    const transaction = new VersionedTransaction(messageV0);
+
+    
+    const signature = await sendTransaction(transaction, connection);
     setTxSignature(signature);
-  }
+
+    // Polling for transaction status using getSignatureStatus
+    let confirmed = false;
+    while (!confirmed) {
+        const status = await connection.getSignatureStatus(signature, {
+            searchTransactionHistory: true,
+        });
+
+        if (status.value?.confirmationStatus === 'confirmed' || status.value?.confirmationStatus === 'finalized') {
+            setTxConfirmed(true);
+            confirmed = true;
+            console.log('Transaction confirmed:', status.value);
+        } else if (status.value?.err) {
+            console.error('Transaction failed:', status.value.err);
+            break;
+        } else {
+            console.log('Transaction not yet confirmed, checking again...');
+            await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait for 2 seconds before checking again
+        }
+    }
+}
+const buttonText = txSignature
+? txConfirmed
+  ? "Submit Task"
+  : "Confirming..."
+: "Pay 0.1 SOL";
 
   return (
     <div className=" px-4 flex justify-center">
@@ -84,7 +114,7 @@ function Upload() {
 
         <div className="flex justify-center">
           <button onClick={txSignature ? onSubmit : makePayment} type="button" className="mt-4 bg-[#512da8] cursor-pointer flex items-center text-base font-semibold text-white rounded px-6 py-2 hover:bg-[#1A1F2E]">
-            {txSignature ? "Submit Task" : "Pay 0.1 SOL"}
+            {buttonText}
           </button>
         </div>
 
