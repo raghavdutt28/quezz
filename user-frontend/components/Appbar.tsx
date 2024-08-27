@@ -8,10 +8,10 @@ import React, { useEffect } from 'react'
 
 const Appbar = () => {
 
-  const {publicKey, signMessage} = useWallet();
+  const { publicKey, signMessage } = useWallet();
 
-  async function signAndSend(){
-    if(!publicKey) return;
+  async function signAndSend() {
+    if (!publicKey) return;
     const message = new TextEncoder().encode("Sign in to Que$$");
     const signature = await signMessage?.(message);
     const response = await axios.post(`${BACKEND_URL}/v1/user/signin`, {
@@ -25,13 +25,16 @@ const Appbar = () => {
   }, [publicKey])
   return (
     <div className="flex justify-between border-b pb-2 pt-2">
-        <div className="text-2xl pl-4 flex justify-center cursor-pointer">
-          <Link href="/">Que$$</Link>
-        </div>
-        <div className=" text-lg pr-4">
+      <div className="text-2xl pl-4 flex justify-center cursor-pointer">
+        <Link href="/">Que$$</Link>
+      </div>
+      <div className=" text-lg pr-4 flex gap-4">
+      <a href = "https://quezz-worker.vercel.app" className="bg-[#512da8] cursor-pointer flex items-center text-base font-semibold text-white rounded px-6 py-2 hover:bg-[#1A1F2E]">
+          Switch to Worker
+      </a>
         {!publicKey ? <WalletMultiButton /> : <WalletDisconnectButton />}
-        </div>
-        
+      </div>
+
     </div>
   )
 }
