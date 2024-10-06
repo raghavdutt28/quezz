@@ -4,9 +4,9 @@ Welcome to **QUE$$**, a Solana-based, one-stop destination for getting your data
 
 ## 🔗 Links
 
+- **QUE$$:** [High level design and work flows](https://www.notion.so/Getting-Started-117e2c244637802e9d5fcc2f17f6f2be?pvs=4)
 - **QUE$$:** [https://quezz.vercel.app/](https://quezz.vercel.app/)
 - **QUE$$-Worker:** [https://quezz-worker.vercel.app/](https://quezz-worker.vercel.app/)
-- **QUE$$:** [High level design and work flows](https://www.notion.so/Getting-Started-117e2c244637802e9d5fcc2f17f6f2be?pvs=4)
 
 ## 🌟 Overview
 
