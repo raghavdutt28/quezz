@@ -33,7 +33,6 @@ export default function TaskDetailPage({params: {taskId}}: {params: {taskId: str
 
     return(
         <div>
-            <Appbar />
             <div className="text-2xl pt-20 flex justify-center">
                 {
                 taskDetails.title

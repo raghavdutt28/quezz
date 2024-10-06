@@ -36,53 +36,52 @@ function Upload() {
   }
 
   async function makePayment() {
-  
+
     const transferInstruction = SystemProgram.transfer({
-        fromPubkey: publicKey!,
-        toPubkey: new PublicKey(que$$PublicKey),
-        lamports: 100000000,
+      fromPubkey: publicKey!,
+      toPubkey: new PublicKey(que$$PublicKey),
+      lamports: 100000000,
     });
 
     const latestBlockhash = await connection.getLatestBlockhash();
 
     const messageV0 = new TransactionMessage({
-        payerKey: publicKey!,
-        recentBlockhash: latestBlockhash.blockhash,
-        instructions: [transferInstruction],
+      payerKey: publicKey!,
+      recentBlockhash: latestBlockhash.blockhash,
+      instructions: [transferInstruction],
     }).compileToV0Message();
 
 
     const transaction = new VersionedTransaction(messageV0);
 
-    
+
     const signature = await sendTransaction(transaction, connection);
     setTxSignature(signature);
 
     // Polling for transaction status using getSignatureStatus
     let confirmed = false;
     while (!confirmed) {
-        const status = await connection.getSignatureStatus(signature, {
-            searchTransactionHistory: true,
-        });
+      const status = await connection.getSignatureStatus(signature, {
+        searchTransactionHistory: true,
+      });
 
-        if (status.value?.confirmationStatus === 'confirmed' || status.value?.confirmationStatus === 'finalized') {
-            setTxConfirmed(true);
-            confirmed = true;
-            console.log('Transaction confirmed:', status.value);
-        } else if (status.value?.err) {
-            console.error('Transaction failed:', status.value.err);
-            break;
-        } else {
-            console.log('Transaction not yet confirmed, checking again...');
-            await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait for 2 seconds before checking again
-        }
+      if (status.value?.confirmationStatus === 'confirmed' || status.value?.confirmationStatus === 'finalized') {
+        setTxConfirmed(true);
+        confirmed = true;
+        console.log('Transaction confirmed:', status.value);
+      } else if (status.value?.err) {
+        console.error('Transaction failed:', status.value.err);
+        break;
+      } else {
+        console.log('Transaction not yet confirmed, checking again...');
+        await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait for 2 seconds before checking again
+      }
     }
-}
-const buttonText = txSignature
-? txConfirmed
-  ? "Submit Task"
-  : "Confirming..."
-: "Pay 0.1 SOL";
+  }
+  const buttonText =
+    txSignature ?
+      txConfirmed ? "Submit Task" : "Confirming..."
+      : "Pay 0.1 SOL";
 
   return (
     <div className=" px-4 flex justify-center">

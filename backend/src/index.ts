@@ -17,7 +17,7 @@ app.use("/v1/worker", workerRouter);
 
 // Start the server and handle errors
 app.listen(8080, () => {
-    console.log("Server listening on port");
+    console.log("Server listening on port 8080");
   })
   .on('error', (err) => {
     console.error("Error starting server:", err);

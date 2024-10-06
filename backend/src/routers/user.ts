@@ -23,6 +23,26 @@ const connection = new Connection(process.env.RPC_URL ?? "");
 const PARENT_WALLET_ADDRESS = "EWPnvsmjvpvuy5X9BrPzKT8zsamKu6tF4u4vGH25CTvr";
 
 const router = Router();
+router.get("/myTasks", authMiddleware, async (req, res) => {
+    //@ts-ignore
+    const userId = req.userId;
+    const tasks = await prismaClient.task.findMany({
+        where: {
+            user_id: userId,
+        }
+    });
+
+    if (tasks.length === 0) {
+        return res.status(404).json({
+            message: "No tasks found for the user."
+        });
+    }
+
+    res.status(200).json({
+        tasks
+    });
+
+});
 
 router.get("/task", authMiddleware, async (req, res) => {
     //@ts-ignore
@@ -78,7 +98,8 @@ router.get("/task", authMiddleware, async (req, res) => {
         result,
         taskDetails
     })
-})
+});
+
 router.post("/task", authMiddleware, async (req, res) => {
     //@ts-ignore
     const userId = req.userId;
@@ -88,7 +109,7 @@ router.post("/task", authMiddleware, async (req, res) => {
         where: {
             id: userId,
         }
-    })
+    });
 
     if (!parsedData.success) {
         return res.status(411).json({
@@ -99,7 +120,6 @@ router.post("/task", authMiddleware, async (req, res) => {
     const transaction = await connection.getTransaction(parsedData.data.signature, {
         maxSupportedTransactionVersion: 1
     });
-    console.log(transaction);
 
     if((transaction?.meta?.postBalances?.[1] ?? 0) - (transaction?.meta?.preBalances?.[1] ?? 0) !== 100000000){
         return res.status(411).json({
@@ -161,9 +181,7 @@ router.get("/preSignedUrl", authMiddleware, async (req, res) => {
     res.json({
         preSignedUrl: url,
         fields
-    })
-
-    console.log({ url, fields })
+    });
 });
 
 //sign in with wallet
