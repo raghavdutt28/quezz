@@ -30,6 +30,7 @@ const connection = new web3_js_1.Connection((_a = process.env.RPC_URL) !== null 
 const router = (0, express_1.Router)();
 const prismaClient = new client_1.PrismaClient();
 router.post("/payout", middleware_1.workerauthMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _b, _c, _d;
     //@ts-ignore
     const workerId = req.workerId;
     const worker = yield prismaClient.worker.findFirst({
@@ -42,16 +43,56 @@ router.post("/payout", middleware_1.workerauthMiddleware, (req, res) => __awaite
             message: "User not found"
         });
     }
-    //logic here to create a txn
     const address = worker === null || worker === void 0 ? void 0 : worker.address;
-    const transaction = new web3_js_1.Transaction().add(web3_js_1.SystemProgram.transfer({
-        fromPubkey: new web3_js_1.PublicKey(que$$PublicKey),
-        toPubkey: new web3_js_1.PublicKey(address),
+    const fromPubkey = new web3_js_1.PublicKey(que$$PublicKey);
+    const toPubkey = new web3_js_1.PublicKey(address);
+    const transferInstruction = web3_js_1.SystemProgram.transfer({
+        fromPubkey,
+        toPubkey,
         lamports: 1000000000 * (worker.pending_amount / config_1.TOTAL_DECIMALS),
-    }));
+    });
+    const blockhash = yield connection.getLatestBlockhash();
+    const message = new web3_js_1.TransactionMessage({
+        payerKey: fromPubkey,
+        recentBlockhash: blockhash.blockhash,
+        instructions: [transferInstruction],
+    }).compileToV0Message();
+    const transaction = new web3_js_1.VersionedTransaction(message);
     const keypair = web3_js_1.Keypair.fromSecretKey((0, bs58_1.decode)(privateKeys_1.privateKey));
-    const signature = yield (0, web3_js_1.sendAndConfirmTransaction)(connection, transaction, [keypair]);
-    //we should add a lock here
+    transaction.sign([keypair]);
+    const signature = yield connection.sendTransaction(transaction, { skipPreflight: false });
+    // Polling for transaction status using getSignatureStatus
+    let confirmed = false;
+    let retries = 0;
+    const maxRetries = 6;
+    while (!confirmed && retries < maxRetries) {
+        const status = yield connection.getSignatureStatus(signature, {
+            searchTransactionHistory: true,
+        });
+        if (((_b = status.value) === null || _b === void 0 ? void 0 : _b.confirmationStatus) === 'confirmed' || ((_c = status.value) === null || _c === void 0 ? void 0 : _c.confirmationStatus) === 'finalized') {
+            confirmed = true;
+            //console.log('Transaction confirmed:', status.value);
+        }
+        else if ((_d = status.value) === null || _d === void 0 ? void 0 : _d.err) {
+            //console.error('Transaction failed:', status.value.err);
+            return res.status(500).json({
+                message: 'Transaction failed',
+                error: status.value.err
+            });
+        }
+        else {
+            //console.log('Transaction not yet confirmed, checking again...');
+            yield new Promise((resolve) => setTimeout(resolve, 5000));
+        }
+        retries++;
+    }
+    if (!confirmed) {
+        return res.status(408).json({
+            message: 'Transaction confirmation timed out',
+            signature: signature
+        });
+    }
+    // Only update the database if the transaction was confirmed successfully
     yield prismaClient.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
         yield tx.worker.update({
             where: {
@@ -75,13 +116,13 @@ router.post("/payout", middleware_1.workerauthMiddleware, (req, res) => __awaite
             }
         });
     }), {
-        maxWait: 5000, // default: 2000
-        timeout: 10000, // default: 5000
+        maxWait: 5000,
+        timeout: 10000,
     });
-    //send the txn to the solana after updating in the database
     res.json({
-        message: "processing payout",
-        amount: worker.pending_amount
+        message: "Processing payout",
+        amount: worker.pending_amount,
+        signature: signature
     });
 }));
 router.get("/balance", middleware_1.workerauthMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {

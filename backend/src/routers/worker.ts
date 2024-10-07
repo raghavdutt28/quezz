@@ -6,7 +6,7 @@ import { workerauthMiddleware } from "../middleware";
 import { getNextTask } from "../db";
 import { createSubmissionInput, signingBitArray } from "../types";
 import nacl from "tweetnacl";
-import { Connection, Keypair, PublicKey, SystemProgram, Transaction, sendAndConfirmTransaction } from "@solana/web3.js";
+import { Connection, Keypair, PublicKey, SystemProgram, TransactionMessage, VersionedTransaction } from "@solana/web3.js";
 import { privateKey } from "../privateKeys";
 import { decode } from "bs58";
 
@@ -25,34 +25,73 @@ router.post("/payout", workerauthMiddleware, async (req, res) => {
         where: {
             id: Number(workerId),
         }
-    })
+    });
 
     if (!worker) {
         return res.status(404).json({
             message: "User not found"
-        })
+        });
     }
 
-    //logic here to create a txn
     const address = worker?.address;
+    const fromPubkey = new PublicKey(que$$PublicKey);
+    const toPubkey = new PublicKey(address);
 
-    const transaction = new Transaction().add(
-        SystemProgram.transfer({
-            fromPubkey: new PublicKey(que$$PublicKey),
-            toPubkey: new PublicKey(address),
-            lamports: 1000_000_000 * (worker.pending_amount / TOTAL_DECIMALS),
-        })
-    );
+    const transferInstruction = SystemProgram.transfer({
+        fromPubkey,
+        toPubkey,
+        lamports: 1000_000_000 * (worker.pending_amount / TOTAL_DECIMALS),
+    });
 
+    const blockhash = await connection.getLatestBlockhash();
+    const message = new TransactionMessage({
+        payerKey: fromPubkey,
+        recentBlockhash: blockhash.blockhash,
+        instructions: [transferInstruction],
+    }).compileToV0Message();
+
+    const transaction = new VersionedTransaction(message);
     const keypair = Keypair.fromSecretKey(decode(privateKey));
 
-    const signature = await sendAndConfirmTransaction(
-        connection,
-        transaction,
-        [keypair],
-    );
+    transaction.sign([keypair]);
 
-    //we should add a lock here
+    const signature = await connection.sendTransaction(transaction, { skipPreflight: false });
+
+    // Polling for transaction status using getSignatureStatus
+    let confirmed = false;
+    let retries = 0;
+    const maxRetries = 6;
+
+    while (!confirmed && retries < maxRetries) {
+        const status = await connection.getSignatureStatus(signature, {
+            searchTransactionHistory: true,
+        });
+
+        if (status.value?.confirmationStatus === 'confirmed' || status.value?.confirmationStatus === 'finalized') {
+            confirmed = true;
+            //console.log('Transaction confirmed:', status.value);
+        } else if (status.value?.err) {
+            //console.error('Transaction failed:', status.value.err);
+            return res.status(500).json({
+                message: 'Transaction failed',
+                error: status.value.err
+            });
+        } else {
+            //console.log('Transaction not yet confirmed, checking again...');
+            await new Promise((resolve) => setTimeout(resolve, 5000));
+        }
+
+        retries++;
+    }
+
+    if (!confirmed) {
+        return res.status(408).json({
+            message: 'Transaction confirmation timed out',
+            signature: signature
+        });
+    }
+
+    // Only update the database if the transaction was confirmed successfully
     await prismaClient.$transaction(async tx => {
         await tx.worker.update({
             where: {
@@ -66,7 +105,7 @@ router.post("/payout", workerauthMiddleware, async (req, res) => {
                     increment: worker.pending_amount
                 }
             }
-        })
+        });
 
         await tx.payouts.create({
             data: {
@@ -75,18 +114,19 @@ router.post("/payout", workerauthMiddleware, async (req, res) => {
                 status: "Processing",
                 signature: signature
             }
-        })
+        });
     }, {
-        maxWait: 5000, // default: 2000
-        timeout: 10000, // default: 5000
-    })
-    //send the txn to the solana after updating in the database
+        maxWait: 5000,
+        timeout: 10000,
+    });
 
     res.json({
-        message: "processing payout",
-        amount: worker.pending_amount
-    })
-})
+        message: "Processing payout",
+        amount: worker.pending_amount,
+        signature: signature
+    });
+});
+
 router.get("/balance", workerauthMiddleware, async (req, res) => {
     //@ts-ignore
     const workerId = req.workerId;

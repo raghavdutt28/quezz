@@ -48,7 +48,6 @@ router.get("/myTasks", middleware_1.default, (req, res) => __awaiter(void 0, voi
             message: "No tasks found for the user."
         });
     }
-    console.log(tasks);
     res.status(200).json({
         tasks
     });

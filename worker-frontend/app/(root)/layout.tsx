@@ -3,8 +3,10 @@ import React, { useMemo } from 'react';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import {
-    WalletModalProvider
+  WalletModalProvider
 } from '@solana/wallet-adapter-react-ui';
+import Appbar from '@/components/Appbar';
+import { SignInProvider } from '@/components/SignInContext';
 
 // Default styles that can be overridden by your app
 require('@solana/wallet-adapter-react-ui/styles.css');
@@ -20,17 +22,20 @@ export default function RootLayout({
   const endpoint = "https://solana-devnet.g.alchemy.com/v2/J13YRjxHrE0UwQw0qSGxjA_YVoKmLvxk";
 
   const wallets = useMemo(
-      () => [],
-      [network]
+    () => [],
+    [network]
   );
 
-    return (
+  return (
     <ConnectionProvider endpoint={endpoint}>
-        <WalletProvider wallets={wallets} autoConnect>
-            <WalletModalProvider>
-                {children}
-            </WalletModalProvider>
-        </WalletProvider>
+      <WalletProvider wallets={wallets} autoConnect>
+        <WalletModalProvider>
+          <SignInProvider>
+            <Appbar />
+            {children}
+          </SignInProvider>
+        </WalletModalProvider>
+      </WalletProvider>
     </ConnectionProvider>
   );
 }
