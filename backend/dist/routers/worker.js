@@ -119,6 +119,26 @@ router.post("/submission", middleware_1.workerauthMiddleware, (req, res) => __aw
                     amount: amount,
                 }
             });
+            yield tx.option.update({
+                where: {
+                    id: Number(parsedBody.data.selection),
+                },
+                data: {
+                    total_submissions: {
+                        increment: 1
+                    }
+                }
+            });
+            yield tx.task.update({
+                where: {
+                    id: Number(parsedBody.data.taskId),
+                },
+                data: {
+                    total_submissions: {
+                        increment: 1
+                    }
+                }
+            });
             yield tx.worker.update({
                 where: {
                     id: workerId,

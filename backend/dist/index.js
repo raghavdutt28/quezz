@@ -19,7 +19,7 @@ app.use("/v1/user", user_1.default);
 app.use("/v1/worker", worker_1.default);
 // Start the server and handle errors
 app.listen(8080, () => {
-    console.log("Server listening on port");
+    console.log("Server listening on port 8080");
 })
     .on('error', (err) => {
     console.error("Error starting server:", err);

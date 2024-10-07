@@ -1,17 +1,19 @@
 "use client"
 import { BACKEND_URL, CLOUDFRONT_URL } from "@/utils";
 import axios from "axios";
-import Image from "next/image";
-import { useState } from "react"
+import { useSignIn } from "./SignInContext";
 
 export function UploadImage({ onImageAdded, image }: {
     onImageAdded: (image: string) => void;
     image?: string;
 }) {
-    const [uploading, setUploading] = useState(false);
+    const {isConnected} = useSignIn();
 
     async function onFileSelect(e: any) {
-        setUploading(true);
+        if(!isConnected){
+            alert("Please login using your Solana Wallet!");
+            return
+        }
         try {
             const file = e.target.files[0];
             const response = await axios.get(`${BACKEND_URL}/v1/user/presignedUrl`, {
@@ -31,29 +33,31 @@ export function UploadImage({ onImageAdded, image }: {
             formData.set("Content-Type", response.data.fields["Content-Type"]);
             formData.append("file", file);
             const awsResponse = await axios.post(presignedUrl, formData);
-            console.log("Res: "+ awsResponse);
+            console.log("Res: " + awsResponse);
 
             onImageAdded(`${CLOUDFRONT_URL}/${response.data.fields["key"]}`);
-        } catch(e) {
+        } catch (e) {
             console.log(e)
         }
-        setUploading(false);
     }
 
     if (image) {
         return <img alt="Option" className={"p-2 w-96 rounded"} src={image} />
     }
 
-    return <div>
-        <div className="w-40 h-40 rounded border text-2xl cursor-pointer">
-                <div className="h-full flex justify-center flex-col relative w-full">
-                    <div className="h-full flex justify-center w-full pt-16 text-4xl">
-                    {uploading ? <div className="text-sm">Loading...</div> : <>
-                        +
-                        <input className="w-full h-full bg-red-400 w-40 h-40" type="file" style={{position: "absolute", opacity: 0, top: 0, left: 0, bottom: 0, right: 0, width: "100%", height: "100%"}} onChange={onFileSelect} />
-                    </>}
+    return (
+
+        <div className="flex flex-col items-center justify-center">
+            <div className="relative w-40 h-40 border-2 border-gray-300 text-gray-500 hover:border-[#1A1F2E] hover:text-[#1A1F2E] rounded-lg shadow-lg overflow-hidden">
+
+                <div className="relative flex flex-col items-center h-full space-y-12">
+                    <input className="w-full h-full bg-red-400 cursor-pointer" type="file" style={{ position: "absolute", opacity: 0, top: 0, left: 0, bottom: 0, right: 0, width: "100%", height: "100%" }} onChange={onFileSelect} />
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 5v14m-7-7h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <p className="text-lg font-medium">Upload Image</p>
                 </div>
             </div>
         </div>
-    </div>
+    )
 }

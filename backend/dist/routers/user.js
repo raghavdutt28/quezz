@@ -35,6 +35,24 @@ const prismaClient = new client_1.PrismaClient();
 const connection = new web3_js_1.Connection((_c = process.env.RPC_URL) !== null && _c !== void 0 ? _c : "");
 const PARENT_WALLET_ADDRESS = "EWPnvsmjvpvuy5X9BrPzKT8zsamKu6tF4u4vGH25CTvr";
 const router = (0, express_1.Router)();
+router.get("/myTasks", middleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //@ts-ignore
+    const userId = req.userId;
+    const tasks = yield prismaClient.task.findMany({
+        where: {
+            user_id: userId,
+        },
+    });
+    if (tasks.length === 0) {
+        return res.status(404).json({
+            message: "No tasks found for the user."
+        });
+    }
+    console.log(tasks);
+    res.status(200).json({
+        tasks
+    });
+}));
 router.get("/task", middleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //@ts-ignore
     const taskId = req.query.taskId;
@@ -63,14 +81,11 @@ router.get("/task", middleware_1.default, (req, res) => __awaiter(void 0, void 0
     const result = {};
     taskDetails.options.forEach(option => {
         result[option.id] = {
-            count: 0,
+            count: option.total_submissions,
             option: {
                 imageUrl: option.image_url
             }
         };
-    });
-    responses.forEach(response => {
-        result[response.option_id].count++;
     });
     res.json({
         result,
@@ -96,7 +111,6 @@ router.post("/task", middleware_1.default, (req, res) => __awaiter(void 0, void 
     const transaction = yield connection.getTransaction(parsedData.data.signature, {
         maxSupportedTransactionVersion: 1
     });
-    console.log(transaction);
     if (((_f = (_e = (_d = transaction === null || transaction === void 0 ? void 0 : transaction.meta) === null || _d === void 0 ? void 0 : _d.postBalances) === null || _e === void 0 ? void 0 : _e[1]) !== null && _f !== void 0 ? _f : 0) - ((_j = (_h = (_g = transaction === null || transaction === void 0 ? void 0 : transaction.meta) === null || _g === void 0 ? void 0 : _g.preBalances) === null || _h === void 0 ? void 0 : _h[1]) !== null && _j !== void 0 ? _j : 0) !== 100000000) {
         return res.status(411).json({
             message: "You've sent the wrong Amount."
@@ -155,7 +169,6 @@ router.get("/preSignedUrl", middleware_1.default, (req, res) => __awaiter(void 0
         preSignedUrl: url,
         fields
     });
-    console.log({ url, fields });
 }));
 //sign in with wallet
 router.post("/signIn", (req, res) => __awaiter(void 0, void 0, void 0, function* () {

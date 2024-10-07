@@ -38,22 +38,24 @@ model Worker {
 //}
 
 model Task {
-  id            Int             @id @default(autoincrement())
-  title         String?         @default("Select the most clickable thumbnail")
-  signature     String
-  amount        Int
-  options       Option[]
-  user_id       Int
-  user          User            @relation(fields: [user_id], references: [id])
-  submissions   Submission[]
+  id                Int             @id @default(autoincrement())
+  title             String?         @default("Select the most clickable thumbnail")
+  signature         String
+  amount            Int
+  options           Option[]
+  user_id           Int
+  user              User            @relation(fields: [user_id], references: [id])
+  submissions       Submission[]
+  total_submissions Int             @default(0)
 }
 
 model Option {
-  id            Int             @id @default(autoincrement())
-  image_url     String
-  task_id       Int
-  task          Task            @relation(fields: [task_id], references: [id])
-  submissions   Submission[]
+  id                Int             @id @default(autoincrement())
+  image_url         String
+  task_id           Int
+  task              Task            @relation(fields: [task_id], references: [id])
+  submissions       Submission[]
+  total_submissions Int?             @default(0)
 }
 
 model Submission {
@@ -84,15 +86,15 @@ enum TxnStatus {
 }
 
 //todo: make dynamic option caching logic
-model SubmissionCache {
-  id        Int     @id @default(autoincrement())
-  task_id   Int
-  option1   Int
-  option2   Int
-  option3   Int
-  option4   Int
-  option5   Int
-  option6   Int
-  option7   Int
-  option8   Int
-}
+//model SubmissionCache {
+//  id        Int     @id @default(autoincrement())
+//  task_id   Int
+//  option1   Int
+//  option2   Int
+//  option3   Int
+//  option4   Int
+//  option5   Int
+//  option6   Int
+//  option7   Int
+//  option8   Int
+//}

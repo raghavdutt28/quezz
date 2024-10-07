@@ -126,6 +126,26 @@ router.post("/submission", workerauthMiddleware, async (req, res) => {
                     amount: amount,
                 }
             })
+            await tx.option.update({
+                where: {
+                    id: Number(parsedBody.data.selection),
+                },
+                data: {
+                    total_submissions: {
+                        increment: 1
+                    }
+                }
+            })
+            await tx.task.update({
+                where: {
+                    id: Number(parsedBody.data.taskId),
+                },
+                data: {
+                    total_submissions: {
+                        increment: 1
+                    }
+                }
+            })
 
             await tx.worker.update({
                 where: {
