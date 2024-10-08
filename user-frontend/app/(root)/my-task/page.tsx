@@ -51,8 +51,20 @@ const Page = () => {
     fetchTasks();
   }, [isConnected, router]);
 
-  if (!isConnected || loading) {
-    return <div>Loading...</div>;
+  if (!isConnected) {
+    return <div className="h-screen flex justify-center flex-col">
+      <div className="w-full flex justify-center text-2xl">
+        <h5 className="mb-2 text-xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">Please login using your Solana Wallet!</h5>
+      </div>
+    </div>
+  }
+
+  if (loading) {
+    return <div className="h-96 flex justify-center flex-col">
+      <div className="w-full flex justify-center text-2xl">
+        <h5 className="mb-2 text-xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">Loading...</h5>
+      </div>
+    </div>
   }
 
   return (
@@ -60,16 +72,23 @@ const Page = () => {
 
       {
         tasks.length > 0 ? (
-          <div className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-gray- py-6 sm:py-12">
-            <div className="mx-auto max-w-screen-xl px-4 w-full">
-              <div className="grid w-full sm:grid-cols-2 xl:grid-cols-4 gap-6">
-                {tasks.map((task, index) => <TaskCard key={index} task={task} onClick={() => { handleClick(task) }} />)}
+          <div className="relative flex min-h-screen flex-col overflow-hidden bg-gray- py-6 sm:py-12">
+            <div className="mx-auto max-w-screen-xl px-4 w-full space-y-6">
+              <div>
+                <label className="block text-md font-medium text-gray-900 text-black">Tasks created by you</label>
+                <div className="my-2 flex justify-center bg-gray-100 rounded-lg min-h-96">
+                  <div className="p-12 grid w-full sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {tasks.map((task, index) => <TaskCard key={index} task={task} onClick={() => { handleClick(task) }} />)}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         ) : (
-          <div className='m-8 flex'>
-            <h5 className='block mx-auto text-xl antialiased font-semibold leading-snug tracking-normal text-gray-500'>No tasks found!</h5>
+          <div className="h-96 flex justify-center flex-col">
+            <div className="w-full flex justify-center text-2xl">
+              <h5 className="mb-2 text-xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">No tasks found!</h5>
+            </div>
           </div>
         )
       }

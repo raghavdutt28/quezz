@@ -14,7 +14,7 @@ interface TaskCardProps {
 const TaskCard: React.FC<TaskCardProps> = ({ task, onClick }) => {
 
     return (
-        <div className="flex flex-col mt-6 text-gray-700 bg-white shadow-md bg-gray-100 hover:bg-[#1A1F2E] hover:text-white border border-gray-200 rounded-xl "
+        <div className="flex max-h-32 flex-col text-gray-700 bg-white shadow-md bg-gray-100 hover:bg-[#1A1F2E] hover:text-white border border-gray-200 rounded-xl cursor"
             onClick={onClick}
         >
             <div className="h-full p-4 flex flex-col items-start justify-between">
@@ -28,7 +28,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick }) => {
                 >
                     {task.title}
                 </h5>
-                <p className='text-xs'>Total Submissions: {task.total_submissions}</p>
+                <p className='text-xs font-medium text-gray-400'>Total Submissions: <span className=' text-base font-semibold text-[#512da8]'>{task.total_submissions}</span></p>
             </div>
         </div>
     )

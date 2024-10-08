@@ -7,10 +7,10 @@ export function UploadImage({ onImageAdded, image }: {
     onImageAdded: (image: string) => void;
     image?: string;
 }) {
-    const {isConnected} = useSignIn();
+    const { isConnected } = useSignIn();
 
     async function onFileSelect(e: any) {
-        if(!isConnected){
+        if (!isConnected) {
             alert("Please login using your Solana Wallet!");
             return
         }
@@ -42,7 +42,13 @@ export function UploadImage({ onImageAdded, image }: {
     }
 
     if (image) {
-        return <img alt="Option" className={"p-2 w-96 rounded"} src={image} />
+        return (
+            <div className="relative flex justify-center bg-gray-200 rounded-md">
+                <div className="m-4 rounded-md overflow-hidden h-fit">
+                    <img alt="image" className={"w-96"} src={image} />
+                </div>
+            </div>
+        )
     }
 
     return (
