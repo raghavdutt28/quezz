@@ -67,10 +67,13 @@ export const NextTask = () => {
     }
 
     if (!currentTask) {
-        return <div className="h-96 flex justify-center flex-col">
-            <div className="w-full flex justify-center text-2xl">
-                <h5 className="mb-2 text-xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">{response}</h5>
+        return <div>
+            <div className="h-96 flex justify-center flex-col">
+                <div className="w-full flex justify-center text-2xl">
+                    <h5 className="mb-2 text-xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">{response}</h5>
+                </div>
             </div>
+            <PayoutBtn />
         </div>
     }
 
