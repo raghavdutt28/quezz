@@ -3,6 +3,7 @@ import { BACKEND_URL } from "@/utils";
 import axios from "axios";
 import { useEffect, useState } from "react"
 import { useSignIn } from "./SignInContext";
+import PayoutBtn from "./PayoutBtn";
 
 interface Task {
     "id": number,
@@ -50,7 +51,7 @@ export const NextTask = () => {
     }, [isConnected]);
 
     if (!isConnected) {
-        return <div className="h-screen flex justify-center flex-col">
+        return <div className="h-96 flex justify-center flex-col">
             <div className="w-full flex justify-center text-2xl">
                 <h5 className="mb-2 text-xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">Please login using your Solana Wallet!</h5>
             </div>
@@ -74,54 +75,67 @@ export const NextTask = () => {
     }
 
     return <div>
-        <div className='text-2xl pt-20 flex justify-center'>
-            <div className="flex flex-col items-start text-left max-w-lg">
-            <h5 className="mb-2 text-xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">{currentTask.title}</h5>
-            <p className="mb-2 text-xl antialiased font-semibold leading-snug tracking-normal text-gray-500">Reward: {currentTask.amount/100000000}</p>
+        <div className="relative flex min-h-screen flex-col overflow-hidden py-6 sm:py-12">
+            <div className="mx-auto max-w-screen-lg p-12 w-full bg-gray-50 rounded-lg shadow-sm space-y-6">
                 <div>
-                <h5 className="mb-2 text-xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">{submitting && "Submitting..."}</h5>
-                    
+                    <label className="block text-md font-medium text-gray-900 text-black">Your Task</label>
+                    <div className="my-2 p-2 rounded-lg bg-gray-200">
+                        <h5 className="ml-4 text-xl antialiased font-semibold leading-snug tracking-normal text-gray-900">{currentTask.title}</h5>
+                    </div>
+                    <div className="flex items-baseline justify-between">
+                        <p className='text-xs font-medium text-gray-400'>Reward: <span className=' text-base font-semibold text-[#512da8]'>{currentTask.amount / 100000000}</span></p>
+                        <span className=' text-base font-semibold text-[#512da8]'>{submitting && "Submitting..."}</span>
+                    </div>
                 </div>
+
+                <div>
+                    <label className="block text-md font-medium text-gray-900 text-black">Choose any one!</label>
+                    <div className="my-2 flex justify-center bg-gray-100 rounded-lg min-h-96">
+                        <div className="py-12 m-4 grid w-full max-w-3xl sm:grid-cols-2 xl:grid-cols-2 gap-4">
+                            {currentTask.options.map((option) => <Option onSelect={async () => {
+                                setSubmitting(true);
+                                try {
+                                    const response = await axios.post(`${BACKEND_URL}/v1/worker/submission`, {
+                                        taskId: currentTask.id.toString(),
+                                        selection: option.id.toString()
+                                    }, {
+                                        headers: {
+                                            "Authorization": localStorage.getItem("token")
+                                        }
+                                    });
+
+                                    const nextTask = response.data.nextTask;
+                                    if (nextTask) {
+                                        setCurrentTask(nextTask)
+                                    } else {
+                                        setCurrentTask(null);
+                                    }
+                                    setBalance(balance + 0.001);
+                                    // refresh the user balance in the appbar
+                                } catch (e) {
+                                    console.log(e);
+                                }
+                                setSubmitting(false);
+
+                            }} key={option.id} imageUrl={option.image_url} />)}
+                        </div>
+                    </div>
+                </div>
+                <PayoutBtn />
             </div>
-        </div>
-        <div className='flex justify-center pt-8 gap-6'>
-            {currentTask.options.map((option, index) => <Option onSelect={async () => {
-                setSubmitting(true);
-                try {
-                    const response = await axios.post(`${BACKEND_URL}/v1/worker/submission`, {
-                        taskId: currentTask.id.toString(),
-                        selection: option.id.toString()
-                    }, {
-                        headers: {
-                            "Authorization": localStorage.getItem("token")
-                        }
-                    });
-
-                    const nextTask = response.data.nextTask;
-                    if (nextTask) {
-                        setCurrentTask(nextTask)
-                    } else {
-                        setCurrentTask(null);
-                    }
-                    setBalance(balance + 0.001);
-                    // refresh the user balance in the appbar
-                } catch (e) {
-                    console.log(e);
-                }
-                setSubmitting(false);
-
-            }} key={option.id} imageUrl={option.image_url} index={index + 1} />)}
         </div>
     </div>
 }
 
-function Option({ index, imageUrl, onSelect }: {
-    index: number
+function Option({ imageUrl, onSelect }: {
     imageUrl: string;
     onSelect: () => void;
 }) {
-    return <div className="">
-        <h2>option {index}</h2>
-        <img onClick={onSelect} className={"h-60 rounded-md cursor-pointer hover:shadow-[0_35px_60px_-15px_rgba(81,45,168,0.4)]"} src={imageUrl} />
-    </div>
+    return (
+        <div onClick={onSelect} className="flex justify-center bg-gray-200 rounded-md shadow-md hover:shadow-lg cursor-pointer">
+            <div className="m-4 rounded-md overflow-hidden bg-black h-fit">
+                <img alt={imageUrl} className={"w-96"} src={imageUrl} />
+            </div>
+        </div>
+    )
 }

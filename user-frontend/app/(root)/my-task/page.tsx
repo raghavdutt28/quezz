@@ -52,7 +52,7 @@ const Page = () => {
   }, [isConnected, router]);
 
   if (!isConnected) {
-    return <div className="h-screen flex justify-center flex-col">
+    return <div className="h-96 flex justify-center flex-col">
       <div className="w-full flex justify-center text-2xl">
         <h5 className="mb-2 text-xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">Please login using your Solana Wallet!</h5>
       </div>

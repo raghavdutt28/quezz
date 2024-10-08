@@ -11,7 +11,7 @@ const Appbar = () => {
     <div className="flex justify-between border-b pb-2 pt-2 items-center">
       <div className="pl-4 flex justify-center cursor-pointer">
         <Link className="flex items-baseline gap-1" href="/">
-          <h3 className='text-2xl'>Que$$</h3>
+          <h3 className='text-2xl font-bold'>Que<span className='text-[#512da8]'>$$</span></h3>
           <p className='text-sm'>worker</p>
         </Link>
       </div>
