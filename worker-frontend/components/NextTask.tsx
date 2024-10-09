@@ -109,12 +109,12 @@ export const NextTask = () => {
 
                                     const nextTask = response.data.nextTask;
                                     if (nextTask) {
-                                        setCurrentTask(nextTask)
+                                        setCurrentTask(nextTask);
                                     } else {
                                         setCurrentTask(null);
+                                        setResponse(response.data.message);
                                     }
                                     setBalance(balance + 0.001);
-                                    // refresh the user balance in the appbar
                                 } catch (e) {
                                     console.log(e);
                                 }
