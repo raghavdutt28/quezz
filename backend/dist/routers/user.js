@@ -92,7 +92,7 @@ router.get("/task", middleware_1.default, (req, res) => __awaiter(void 0, void 0
     });
 }));
 router.post("/task", middleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _d, _e, _f, _g, _h, _j, _k, _l;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
     //@ts-ignore
     const userId = req.userId;
     const body = req.body;
@@ -110,26 +110,26 @@ router.post("/task", middleware_1.default, (req, res) => __awaiter(void 0, void 
     const transaction = yield connection.getTransaction(parsedData.data.signature, {
         maxSupportedTransactionVersion: 1
     });
-    if (((_f = (_e = (_d = transaction === null || transaction === void 0 ? void 0 : transaction.meta) === null || _d === void 0 ? void 0 : _d.postBalances) === null || _e === void 0 ? void 0 : _e[1]) !== null && _f !== void 0 ? _f : 0) - ((_j = (_h = (_g = transaction === null || transaction === void 0 ? void 0 : transaction.meta) === null || _g === void 0 ? void 0 : _g.preBalances) === null || _h === void 0 ? void 0 : _h[1]) !== null && _j !== void 0 ? _j : 0) !== 100000000) {
+    if (((_c = (_b = (_a = transaction === null || transaction === void 0 ? void 0 : transaction.meta) === null || _a === void 0 ? void 0 : _a.postBalances) === null || _b === void 0 ? void 0 : _b[1]) !== null && _c !== void 0 ? _c : 0) - ((_f = (_e = (_d = transaction === null || transaction === void 0 ? void 0 : transaction.meta) === null || _d === void 0 ? void 0 : _d.preBalances) === null || _e === void 0 ? void 0 : _e[1]) !== null && _f !== void 0 ? _f : 0) !== 100000000) {
         return res.status(411).json({
             message: "You've sent the wrong Amount."
         });
     }
-    if (((_k = transaction === null || transaction === void 0 ? void 0 : transaction.transaction.message.getAccountKeys().get(1)) === null || _k === void 0 ? void 0 : _k.toString()) !== PARENT_WALLET_ADDRESS) {
+    if (((_g = transaction === null || transaction === void 0 ? void 0 : transaction.transaction.message.getAccountKeys().get(1)) === null || _g === void 0 ? void 0 : _g.toString()) !== PARENT_WALLET_ADDRESS) {
         return res.status(411).json({
             message: "You've sent to wrong address."
         });
     }
-    if (((_l = transaction === null || transaction === void 0 ? void 0 : transaction.transaction.message.getAccountKeys().get(0)) === null || _l === void 0 ? void 0 : _l.toString()) !== (user === null || user === void 0 ? void 0 : user.address)) {
+    if (((_h = transaction === null || transaction === void 0 ? void 0 : transaction.transaction.message.getAccountKeys().get(0)) === null || _h === void 0 ? void 0 : _h.toString()) !== (user === null || user === void 0 ? void 0 : user.address)) {
         return res.status(411).json({
             message: "This amount was not sent by you."
         });
     }
     let response = yield prismaClient.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
-        var _m;
+        var _a;
         const response = yield tx.task.create({
             data: {
-                title: (_m = parsedData.data.title) !== null && _m !== void 0 ? _m : DEFAULT_TITLE,
+                title: (_a = parsedData.data.title) !== null && _a !== void 0 ? _a : DEFAULT_TITLE,
                 signature: parsedData.data.signature,
                 amount: 0.1 * config_1.TOTAL_DECIMALS,
                 user_id: userId,

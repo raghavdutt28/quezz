@@ -73,7 +73,7 @@ router.get("/task", authMiddleware, async (req, res) => {
     });
 
     const result: Record<string, {
-        count: number;
+        count: number | null;
         option: {
             imageUrl: string
         }

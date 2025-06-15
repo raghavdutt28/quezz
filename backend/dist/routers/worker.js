@@ -30,7 +30,7 @@ const connection = new web3_js_1.Connection((_a = process.env.RPC_URL) !== null 
 const router = (0, express_1.Router)();
 const prismaClient = new client_1.PrismaClient();
 router.post("/payout", middleware_1.workerauthMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b, _c, _d;
+    var _a, _b, _c;
     //@ts-ignore
     const workerId = req.workerId;
     const worker = yield prismaClient.worker.findFirst({
@@ -69,11 +69,11 @@ router.post("/payout", middleware_1.workerauthMiddleware, (req, res) => __awaite
         const status = yield connection.getSignatureStatus(signature, {
             searchTransactionHistory: true,
         });
-        if (((_b = status.value) === null || _b === void 0 ? void 0 : _b.confirmationStatus) === 'confirmed' || ((_c = status.value) === null || _c === void 0 ? void 0 : _c.confirmationStatus) === 'finalized') {
+        if (((_a = status.value) === null || _a === void 0 ? void 0 : _a.confirmationStatus) === 'confirmed' || ((_b = status.value) === null || _b === void 0 ? void 0 : _b.confirmationStatus) === 'finalized') {
             confirmed = true;
             //console.log('Transaction confirmed:', status.value);
         }
-        else if ((_d = status.value) === null || _d === void 0 ? void 0 : _d.err) {
+        else if ((_c = status.value) === null || _c === void 0 ? void 0 : _c.err) {
             //console.error('Transaction failed:', status.value.err);
             return res.status(500).json({
                 message: 'Transaction failed',

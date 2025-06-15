@@ -3,7 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.workerauthMiddleware = void 0;
+exports.default = authMiddleware;
+exports.workerauthMiddleware = workerauthMiddleware;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = require("./config");
 function authMiddleware(req, res, next) {
@@ -29,7 +30,6 @@ function authMiddleware(req, res, next) {
         });
     }
 }
-exports.default = authMiddleware;
 function workerauthMiddleware(req, res, next) {
     var _a;
     const authHeader = (_a = req.headers["authorization"]) !== null && _a !== void 0 ? _a : "";
@@ -53,4 +53,3 @@ function workerauthMiddleware(req, res, next) {
         });
     }
 }
-exports.workerauthMiddleware = workerauthMiddleware;

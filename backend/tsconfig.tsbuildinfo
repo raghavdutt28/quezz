@@ -1,0 +1,1 @@
+{"root":["./src/config.ts","./src/db.ts","./src/index.ts","./src/middleware.ts","./src/privatekeys.ts","./src/types.ts","./src/routers/testing.ts","./src/routers/user.ts","./src/routers/worker.ts"],"version":"5.8.3"}
