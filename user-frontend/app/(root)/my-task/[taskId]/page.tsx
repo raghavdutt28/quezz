@@ -92,10 +92,10 @@ function Option({ imageUrl, votes }: { imageUrl: string, votes: number }) {
             <div className="m-4 rounded-md overflow-hidden bg-black h-fit">
                 <img alt={imageUrl} className={"w-96"} src={imageUrl} />
             </div>
-            <div className="absolute -bottom-5 w-16 h-16">
-                <div className="rounded-full bg-[#512da8] w-full h-full flex flex-col justify-center items-center">
-                    <span className=' text-xl font-semibold text-white'>{votes}</span>
-                    <p className='text-xs font-medium text-white'>votes</p>
+            <div className="absolute bottom-8 rounded-lg bg-[#512da8] w-[180px]">
+                <div className="flex justify-center items-end gap-1 py-1">
+                    <span className=' text-2xl font-semibold text-white'>{votes}</span>
+                    <p className='text-xs font-medium text-white pb-[4px]'>votes</p>
                 </div>
             </div>
         </div>
