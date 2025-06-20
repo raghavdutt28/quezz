@@ -6,7 +6,7 @@ import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import Appbar from '@/components/Appbar';
 import { SignInProvider } from '@/components/SignInContext'
 
-// Default styles that can be overridden by your app
+
 require('@solana/wallet-adapter-react-ui/styles.css');
 
 export default function RootLayout({
@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   const network = WalletAdapterNetwork.Devnet;
 
-  // You can also provide a custom RPC endpoint.
+
   const endpoint = "https://solana-devnet.g.alchemy.com/v2/J13YRjxHrE0UwQw0qSGxjA_YVoKmLvxk";
 
   const wallets = useMemo(
