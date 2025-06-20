@@ -50,7 +50,7 @@ const MobMenu = () => {
 
             <div
                 ref={menuRef}
-                className={`fixed top-0 left-0 h-screen w-1/2 min-w-[200px] max-w-[270px] bg-white z-50 text-dark
+                className={`fixed top-0 left-0 h-screen w-1/2 min-w-[210px] max-w-[270px] bg-white z-50 text-dark
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
             >
@@ -71,12 +71,12 @@ const MobMenu = () => {
                         </div>
                     </div>
 
-                    <ul className="list-none flex flex-col mt-4 gap-4 w-fit ">
+                    <ul className="list-none flex flex-col mt-4 gap-4">
 
-                        <li className='w-full'><Link onClick={handleClose} href="https://quezz.vercel.app" className="bg-[#512da8] cursor-pointer flex items-center text-base font-semibold text-white rounded px-6 py-3 hover:bg-[#1A1F2E]">
+                        <li className=' rounded w-full flex items-center bg-[#512da8] hover:bg-[#1A1F2E] cursor-pointer'><Link onClick={handleClose} href="https://quezz.vercel.app" className=" text-base font-semibold text-white px-6 py-3 whitespace-nowrap ">
                             Switch to User
                         </Link></li>
-                        <li className='bg-[#512da8] cursor-pointer flex items-center text-base font-semibold text-white rounded hover:bg-[#1A1F2E]' onClick={handleClose}>{<WalletMultiButton />}</li>
+                        <li className=' w-full bg-[#512da8] cursor-pointer flex items-center rounded hover:bg-[#1A1F2E]' onClick={handleClose}>{<WalletMultiButton />}</li>
                     </ul>
                 </div>
             </div>
